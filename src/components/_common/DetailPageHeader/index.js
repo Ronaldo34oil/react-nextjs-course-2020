@@ -4,6 +4,7 @@ import Button from '@common/Button'
 import colors from '@features/_ui/colors'
 
 export default function DetailPageHeader({ data }) {
+  
   return (
     <Flex flexWrap="wrap" css={{ padding: '20px 70px' }}>
       <Box width={1}>

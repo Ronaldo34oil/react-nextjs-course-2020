@@ -2,9 +2,14 @@ import React from 'react'
 import { Flex, Box } from '@grid'
 import withPage from '@lib/page/withPage'
 import { useMember } from '@lib/auth'
+import { useRouter } from 'next/router'
+
 
 import DetailPageHeader from '@components/_common/DetailPageHeader'
 import SongList from '@common/SongList'
+
+import { Fetch } from '@lib/api'
+import * as AlbumLists from '@features/album/services'
 
 AlbumDetailPage.defaultProps = {
   data: {
@@ -48,21 +53,35 @@ AlbumDetailPage.defaultProps = {
 }
 
 function AlbumDetailPage({ data }) {
+  console.log(data);
   const { token } = useMember()
-
+  const { query : { id }} = useRouter() //เรียกใช้ param จาก router โดยมีการ import useRoter next/router
+  //console.log( id )
   if (token === null) {
     return null
   }
 
   return (
-    <Flex flexWrap="wrap" css={{ padding: '60px 120px' }}>
-      <Box width={1 / 3}>
-        <DetailPageHeader data={data} />
-      </Box>
-      <Box width={2 / 3}>
-        <SongList tracks={data.tracks} />
-      </Box>
-    </Flex>
+  <Fetch service ={ () => AlbumLists.getAlbumById(id , {token : token}) } >
+   {
+     ({ data }) => {
+       return (
+         <Flex flexWrap="wrap" css={{ padding: '60px 120px' }}>
+          <Box width={1 / 3}>
+            
+              <DetailPageHeader data={data} />
+            
+            {/* <DetailPageHeader data={data} /> */}
+          </Box>
+          <Box width={2 / 3}>
+            <SongList tracks={data.tracks} />
+          </Box>
+        </Flex>
+
+       )}
+    
+    }
+    </Fetch>
   )
 }
 
